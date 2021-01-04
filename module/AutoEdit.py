@@ -160,8 +160,8 @@ class AutoEdit:
             
     def execute(self):
         print('Executing command...')
-        command = 'run.bat'
-        if os.path.exists('run.bat'):
+        command = 'run.sh'
+        if os.path.exists('run.sh'):
             if self.log:
                  command += ' > log.txt'    
             output = subprocess.call(command,shell=True)
@@ -171,12 +171,12 @@ class AutoEdit:
             
             
     def write_to_bat(self,command):
-        if os.path.exists('run.bat'):
-            os.remove(f'run.bat')
-        file1 = open("run.bat","w")
+        if os.path.exists('run.sh'):
+            os.remove(f'run.sh')
+        file1 = open("run.sh","w")
         file1.write(command)
         file1.close()
-        filename = 'run.bat'
+        filename = 'run.sh'
         if self.log:
             filename += ' > log.txt'
         return filename
