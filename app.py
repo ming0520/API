@@ -1,7 +1,14 @@
-import AutoEdit
 import importlib
-importlib.reload(AutoEdit)
-from AutoEdit import AutoEdit
+
+import module.AutoEdit
+importlib.reload(module.AutoEdit)
+from module.AutoEdit import AutoEdit
+
+import module.VoskProcess
+importlib.reload(module.VoskProcess)
+from module.VoskProcess import VoskProcess
+
+vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
 # End Auto Edit Library
 
 import os
@@ -61,16 +68,17 @@ def upload_file():
             cut = AutoEdit(file=video_path,ac='1',
                     verbose=True,fm=4,st=0.2,fps=fps,
                     log=True,mono=True,
-                    model='20201227-1123-MLP-RMSprop-Default-80-123.h5'
+                    model='module/20201227-1123-MLP-RMSprop-Default-80-123.h5'
                     )
-            output = cut.export_good()
-            # cut.extract_audio()
-            # cut.load_audio()
+            # output = cut.export_good()
+            cut.extract_audio()
+            cut.load_audio()
             # cut.vosk_process()
-            # cut.feature_process()
-            # cut.generate_complex_filter(cut.render_list)
-            # cut.execute()
-            # output = cut.post_process()
+            cut.df = vosk.transcribe(cut.audioData)
+            cut.feature_process()
+            cut.generate_complex_filter(cut.render_list)
+            cut.execute()
+            output = cut.post_process()
             path = output
             try:
                 return send_file(path, as_attachment=True)
