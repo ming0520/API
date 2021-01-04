@@ -2,6 +2,7 @@
 {% block title %}Upload{% endblock %}
 {% block heading %}Upload Page{% endblock %}
 {% block content %}
+<html>
 <div class="container-md">
     <form method=post enctype=multipart/form-data>        
         <!-- <div class="custom-file">
@@ -15,20 +16,35 @@
             <div class="custom-file">
               <input type="file" class="custom-file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" name='file'>
               <label class="custom-file-label" for="inputGroupFile04">
-                {% if file and allowed_file(file.filename): %}
-                  {{file.filename}}
-                {% else %}
-                  Choose file
-                {% endif %}
+                <!-- {% include 'messages.html' %}
+                {% block body %}{% endblock %} -->
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                      {{ message }}
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
               </label>
             </div>
             <div class="input-group-append">
               <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04" value="Upload">Submit</button>
             </div>
-          </div>
+          </div> 
     </form>
+    <!-- <div class="progress" style='margin-top:25px'>
+      <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+    </div>          -->
 </div>
     {% endblock %}
     {% if file and allowed_file(file.filename): %}
       <h1>Processing</h1>
     {% endif %}
+</html>
+<!-- <script>
+// Add the following code if you want the name of the file appear on select
+$("#inputGroupFile04").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+</script> -->

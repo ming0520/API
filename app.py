@@ -8,7 +8,7 @@ import module.VoskProcess
 importlib.reload(module.VoskProcess)
 from module.VoskProcess import VoskProcess
 
-vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
+# vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
 # End Auto Edit Library
 
 import os
@@ -33,6 +33,7 @@ ALLOWED_EXTENSIONS = {'mp4'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'super secret key'
 
 from flask import send_from_directory
 
@@ -61,6 +62,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            flash(filename)
             video_path = filename
             video = cv2.VideoCapture(video_path)
             fps = video.get(cv2.CAP_PROP_FPS)
@@ -70,14 +72,14 @@ def upload_file():
                     log=True,mono=True,
                     model='module/20201227-1123-MLP-RMSprop-Default-80-123.h5'
                     )
-            # output = cut.export_good()
-            cut.extract_audio()
-            cut.load_audio()
-            # cut.vosk_process()
-            cut.df = vosk.transcribe(cut.audioData)
-            cut.feature_process()
-            cut.generate_complex_filter(cut.render_list)
-            cut.execute()
+            output = cut.export_good()
+            # cut.extract_audio()
+            # cut.load_audio()
+            # # cut.vosk_process()
+            # cut.df = vosk.transcribe(cut.audioData)
+            # cut.feature_process()
+            # cut.generate_complex_filter(cut.render_list)
+            # cut.execute()
             output = cut.post_process()
             path = output
             try:
@@ -86,6 +88,9 @@ def upload_file():
                 self.log.exception(e)
                 self.Error(400)
             return 'file uploaded successfully'
+        else:
+            flash('Only mp4 are allowed')
+            return render_template("upload.html")
     return render_template("upload.html")
     # '''
     # <!doctype html>
