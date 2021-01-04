@@ -25,11 +25,11 @@ np.set_printoptions(precision=3, suppress=True)
 # developed library
 import importlib
 
-import FeatureExtraction
+import module.FeatureExtraction
 
-importlib.reload(FeatureExtraction)
+importlib.reload(module.FeatureExtraction)
 
-from FeatureExtraction import FeatureExtraction
+from module.FeatureExtraction import FeatureExtraction
 
 class Dataset:
     def __init__(self,):

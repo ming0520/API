@@ -32,20 +32,20 @@ np.set_printoptions(precision=3, suppress=True)
 # developed library
 import importlib
 
-import Timecode
-import FeatureExtraction
-import Dataset
-import Timestamp
+import module.Timecode
+import module.FeatureExtraction
+import module.Dataset
+import module.Timestamp
 
-importlib.reload(Timecode)
-importlib.reload(FeatureExtraction)
-importlib.reload(Dataset)
-importlib.reload(Timestamp)
+importlib.reload(module.Timecode)
+importlib.reload(module.FeatureExtraction)
+importlib.reload(module.Dataset)
+importlib.reload(module.Timestamp)
 
-from Timecode import Timecode
-from FeatureExtraction import FeatureExtraction
-from Dataset import Dataset
-from Timestamp import Timestamp
+from module.Timecode import Timecode
+from module.FeatureExtraction import FeatureExtraction
+from module.Dataset import Dataset
+from module.Timestamp import Timestamp
 
 
 class AutoEdit:
