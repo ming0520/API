@@ -190,5 +190,4 @@ dependencies:
     - tzlocal==2.1
     - vosk==0.3.7
     - widgetsnbextension==3.5.1
-prefix: C:\Users\mingb\anaconda3\envs\pythonGPU
 
