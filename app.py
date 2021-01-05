@@ -80,13 +80,13 @@ def upload_file():
             # cut.feature_process()
             # cut.generate_complex_filter(cut.render_list)
             # cut.execute()
-            output = cut.post_process()
+            # output = cut.post_process()
             path = output
-            try:
-                return send_file(path, as_attachment=True)
-            except Exception as e:
-                self.log.exception(e)
-                self.Error(400)
+            # try:
+            return send_file(path, as_attachment=True)
+            # except Exception as e:
+                # self.log.exception(e)
+                # self.Error(400)
             return 'file uploaded successfully'
         else:
             flash('Only mp4 are allowed')
