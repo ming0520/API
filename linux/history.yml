@@ -1,0 +1,20 @@
+name: pythonGPU
+channels:
+  - defaults
+dependencies:
+  - keras
+  - seaborn
+  - console_shortcut
+  - jupyterlab
+  - notebook
+  - pyaudio
+  - matplotlib
+  - console_shortcut
+  - jupyterlab
+  - scipy
+  - numpy
+  - joblib
+  - scikit-learn
+  - tensorflow
+prefix: C:\Users\mingb\anaconda3\envs\pythonGPU
+

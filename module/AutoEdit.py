@@ -160,10 +160,10 @@ class AutoEdit:
             
     def execute(self):
         print('Executing command...')
-        command = 'run.sh'
+        command = './run.sh'
         if os.path.exists('run.sh'):
-            if self.log:
-                 command += ' > log.txt'    
+            # if self.log:
+            #      command += ' > log.txt'    
             output = subprocess.call(command,shell=True)
         if self.VERBOSE:
             print("Complex filter command success") if output == 0 else print("Complex filter command failed!")
@@ -177,8 +177,8 @@ class AutoEdit:
         file1.write(command)
         file1.close()
         filename = 'run.sh'
-        if self.log:
-            filename += ' > log.txt'
+        # if self.log:
+        #     filename += ' > log.txt'
         return filename
     
     def produce_concat_file(self):
@@ -224,7 +224,8 @@ class AutoEdit:
 #         if self.log:
 #             total_string += " > log.txt 2>&1";
         bat_path = self.write_to_bat(total_string)
-        output = subprocess.call(bat_path,shell=True)
+        # output = subprocess.call(bat_path,shell=True)
+        self.execute()
         if self.VERBOSE:
             print("Select filter command success") if output == 0 else print("Select filter command failed!")
             
@@ -293,6 +294,7 @@ class AutoEdit:
         filter = filter + f' -map "[out]" {self.FILENAME}_COMPLEX.mp4'
 
         bat_path = self.write_to_bat(filter)
+        self.execute()
         output = 1
         if self.VERBOSE:
             print("Complex frilter command success") if output == 0 else print("Complex filter command failed!")
