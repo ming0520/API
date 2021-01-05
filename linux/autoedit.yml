@@ -1,0 +1,16 @@
+name: autoedit
+channels:
+  - defaults
+dependencies:
+  - notebook
+  - pyaudio
+  - matplotlib
+  - console_shortcut
+  - jupyterlab
+  - scipy
+  - numpy
+  - joblib
+  - scikit-learn
+  - tensorflow
+prefix: C:\Users\mingb\anaconda3\envs\autoedit
+
