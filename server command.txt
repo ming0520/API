@@ -1,0 +1,12 @@
+/home/ming0520/.local/lib/python3.8/site-packages 
+
+export PATH=/home/ming0520/.local/lib/python3.8/site-packages:$PATH
+
+export PATH="/home/ming0520/anaconda3/bin:$PATH"
+/home/ming0520/.local/lib/python3.8/site-packages
+
+export PATH="/home/ming0520/.local/lib/python3.8/site-packages:$PATH"
+
+export PATH="/home/ming0520/.local/bin:$PATH"
+
+export PATH="/home/ming0520/.local/lib/python3.8:$PATH"

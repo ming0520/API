@@ -160,7 +160,7 @@ class AutoEdit:
             
     def execute(self):
         print('Executing command...')
-        command = './run.sh'
+        command = 'bash ./run.sh'
         if os.path.exists('run.sh'):
             # if self.log:
             #      command += ' > log.txt'    
