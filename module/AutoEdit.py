@@ -494,6 +494,7 @@ class AutoEdit:
                 counter = counter + 1
             word = word + ts.word + " "    
 
+        render_list.append(Timestamp(include_list[-1].start,include_list[-1].end,include_list[-1].word))
         self.render_list = render_list
             
 
