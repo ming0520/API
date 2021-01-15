@@ -1,1 +1,2 @@
-alias cdfyp2='cd /mnt/e/Users/User/Documents/JupyterWorkspace/FYP2'
+alias cdfyp2="cd /mnt/e/Users/User/Documents/JupyterWorkspace/FYP2"
+cdfyp2
