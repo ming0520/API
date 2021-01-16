@@ -2,3 +2,4 @@ log.txt
 *.mp4
 *.csv
 run.sh
+*.wav
