@@ -50,15 +50,21 @@ from module.Timestamp import Timestamp
 
 class AutoEdit:
     def __init__(self, file=None, ba='160000', ac='1', ar='16000',output_format='.wav', fps = 30.0, 
-                 st = 0.04, fm = 4, lt = 2.00, verbose = False,
+                 st = 0.04, fm = 4, lt = 2.00, verbose = False, isRender = True,
                  log=False, mono = True, 
                  model='Model/mymodel_78_18.h5'):
         #parameter for ffmpeg to convert the file
         self.MODEL_PATH = model
         self.INPUT_FILE = file
-        self.FILENAME = file.split('.')[0]
+        if(file != None):
+            self.FILENAME = file.split('.')[0]
+        else:
+            self.FILENAME = None
         self.AUDIO_OUTPUT_FORMAT = output_format
-        self.AUDIO_OUTPUT = f'{self.FILENAME}{self.AUDIO_OUTPUT_FORMAT}'
+        if(file != None):
+            self.AUDIO_OUTPUT = f'{self.FILENAME}{self.AUDIO_OUTPUT_FORMAT}'
+        else:
+            self.AUDIO_OUTPUT = None
         
         self.BITRATE_AUDIO = ba
         self.AUDIO_CHANEL = ac
@@ -87,6 +93,7 @@ class AutoEdit:
         self.log = log
         self.isMono = mono
         self.VOSK_PATH = 'vosk-model-small-en-us-0.15'
+        self.isRender = isRender
         # self.VOSK_PATH = 'vosk-model-en-us-aspire-0.2'
             
     def extract_audio(self):
@@ -171,6 +178,8 @@ class AutoEdit:
             
             
     def write_to_bat(self,command):
+        if(self.isRender == False):
+            return
         if os.path.exists('run.sh'):
             os.remove(f'run.sh')
         file1 = open("run.sh","w")
@@ -297,7 +306,7 @@ class AutoEdit:
         self.execute()
         output = 1
         if self.VERBOSE:
-            print("Complex frilter command success") if output == 0 else print("Complex filter command failed!")
+            print("Complex filter command success") if output == 0 else print("Complex filter command failed!")
     
     
     def post_process(self):
@@ -495,11 +504,11 @@ class AutoEdit:
             word = word + ts.word + " "    
 
         render_list.append(Timestamp(include_list[-1].start,include_list[-1].end,include_list[-1].word))
-        self.render_list = render_list
-            
+        self.render_list = render_list           
 
 
-    def generate_complex_filter(self,render_list):
+    def generate_complex_filter(self):
+        render_list = self.render_list
         print('Generating complex filter...')
         trim = []
         duration_list = []
@@ -526,9 +535,20 @@ class AutoEdit:
         # Start to generate ending of command
         filter += f'concat=n={number_of_segment}:v=1:a=1 [out]'
         filter = '"' + filter + '"'
-        filter = f'ffmpeg -y -i {self.INPUT_FILE} -filter_complex ' + filter
-        filter = filter + f' -map "[out]" {self.FILENAME}_COMPLEX.mp4'
-        bat_path = self.write_to_bat(filter)
-        print('Complete complex filter...')
+        
+        if(self.isRender):
+            filter = f'ffmpeg -y -i {self.INPUT_FILE} -filter_complex ' + filter
+        else:
+            filter = f'-filter_complex ' + filter
+
+        filter = filter + f' -map "[out]"'
+
+        if(self.isRender):
+            filter = filter + f' {self.FILENAME}_COMPLEX.mp4'
+            bat_path = self.write_to_bat(filter)
+            print('Complete complex filter...')
+            self.filter = filter
+        else:
+            self.filter = filter
         
         
