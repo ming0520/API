@@ -103,6 +103,9 @@ class AutoEdit:
         cmd = ['ffmpeg', '-y' ,'-i',self.INPUT_FILE,'-acodec','pcm_s16le' ,'-b:a', self.BITRATE_AUDIO, '-ac', self.AUDIO_CHANEL, 
                '-ar', self.AUDIO_RATE, '-vn', f'{self.AUDIO_OUTPUT}']
         #ffmpeg -i "%%a" -acodec pcm_s16le -ac 1 -ar 16000 -af lowpass=3000,highpass=200 "converted\%%~na.wav
+        # ffmpeg -y -i SBLQ.mp4 -acodec pcm_s16le -b:a 16k -ac 1 -ar 16000 -vn output.wav
+
+        # ffmpeg -y -i SBLQ.mp4 -acodec libmp3lame -b:a 16k -ac 1 -ar 16000 -vn output.mp3
         if(not self.VERBOSE):
             cmd.extend(['-nostats', '-loglevel', '0'])
         subprocess.call(cmd)
