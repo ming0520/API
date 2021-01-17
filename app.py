@@ -7,7 +7,7 @@ from module.AutoEdit import AutoEdit
 import module.VoskProcess
 importlib.reload(module.VoskProcess)
 from module.VoskProcess import VoskProcess
-
+vosk = VoskProcess(vosk_path='module/vosk-model-en-us-aspire-0.2')
 # vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
 # End Auto Edit Library
 
@@ -70,7 +70,6 @@ def api_process():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_api_file(file.filename):
-            print('waet8ayce87wcyen89cye87cawy8eoc7yec87ywa8ecya')
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash(filename)
@@ -91,7 +90,6 @@ def api_process():
             cut.load_audio()
             # cut.vosk_process()
             # flash('Transcribing')
-            vosk = VoskProcess(vosk_path='module/vosk-model-en-us-aspire-0.2')
             cut.df = vosk.transcribe(cut.audioData)
             # flash('Feature processing')
             cut.feature_process()
@@ -144,7 +142,6 @@ def upload_file():
             cut.extract_audio()
             cut.load_audio()
             # # cut.vosk_process()
-            vosk = VoskProcess(vosk_path='module/vosk-model-en-us-aspire-0.2')
             cut.df = vosk.transcribe(cut.audioData)
             cut.feature_process()
             cut.generate_complex_filter()
