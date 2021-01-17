@@ -4,3 +4,4 @@ log.txt
 run.sh
 *.wav
 vosk-model-en-us-aspire-0.2
+module/__pycache__/
