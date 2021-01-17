@@ -11,7 +11,6 @@ class VoskProcess:
         vosk.SetLogLevel(-1)
         self.VOSK_PATH = vosk_path
         self.vosk_model = vosk.Model(self.VOSK_PATH)
-        self.recognizer = vosk.KaldiRecognizer(self.vosk_model, 16000)
         print('Loaded vosk!')
 
     def extract_words(self,res):
@@ -38,6 +37,9 @@ class VoskProcess:
         return results                
 
     def transcribe(self,audioData):
+        print('Creating recognizer ...')
+        self.recognizer = vosk.KaldiRecognizer(self.vosk_model, 16000)
+        print('Created recognizer')
         self.audioData = audioData
         int16 = np.int16(self.audioData * 32768).tobytes()
         # vosk_path = self.VOSK_PATH
