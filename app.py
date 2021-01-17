@@ -7,8 +7,8 @@ from module.AutoEdit import AutoEdit
 import module.VoskProcess
 importlib.reload(module.VoskProcess)
 from module.VoskProcess import VoskProcess
-vosk = VoskProcess(vosk_path='module/vosk-model-en-us-aspire-0.2')
-# vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
+# vosk = VoskProcess(vosk_path='module/vosk-model-en-us-aspire-0.2')
+vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
 # End Auto Edit Library
 
 import os
