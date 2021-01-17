@@ -7,7 +7,8 @@ from module.AutoEdit import AutoEdit
 import module.VoskProcess
 importlib.reload(module.VoskProcess)
 from module.VoskProcess import VoskProcess
-
+vosk = VoskProcess(vosk_path='module/vosk-model-en-us-aspire-0.2')
+# vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
 # End Auto Edit Library
 
 import os
@@ -35,21 +36,16 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'super secret key'
 
-vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
+# vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
 from flask import send_from_directory
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def allowed_api_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_API_EXTENSIONS
-
 @app.route('/demo/')
 def get_demo():
-    # command = 'ffmpeg -y -i example.mp4 -filter_complex "[0:v]trim=start=0.15:end=0.69,setpts=PTS-STARTPTS[v0];[0:a]atrim=start=0.15:end=0.69,asetpts=PTS-STARTPTS[a0];[0:v]trim=start=1.29:end=3.21,setpts=PTS-STARTPTS[v1];[0:a]atrim=start=1.29:end=3.21,asetpts=PTS-STARTPTS[a1];[0:v]trim=start=3.24:end=4.23,setpts=PTS-STARTPTS[v2];[0:a]atrim=start=3.24:end=4.23,asetpts=PTS-STARTPTS[a2];[0:v]trim=start=4.26:end=4.83,setpts=PTS-STARTPTS[v3];[0:a]atrim=start=4.26:end=4.83,asetpts=PTS-STARTPTS[a3];[0:v]trim=start=5.04:end=6.09,setpts=PTS-STARTPTS[v4];[0:a]atrim=start=5.04:end=6.09,asetpts=PTS-STARTPTS[a4];[0:v]trim=start=6.12:end=8.34,setpts=PTS-STARTPTS[v5];[0:a]atrim=start=6.12:end=8.34,asetpts=PTS-STARTPTS[a5];[0:v]trim=start=8.4:end=10.41,setpts=PTS-STARTPTS[v6];[0:a]atrim=start=8.4:end=10.41,asetpts=PTS-STARTPTS[a6];[0:v]trim=start=10.71:end=11.7,setpts=PTS-STARTPTS[v7];[0:a]atrim=start=10.71:end=11.7,asetpts=PTS-STARTPTS[a7];[0:v]trim=start=11.76:end=13.05,setpts=PTS-STARTPTS[v8];[0:a]atrim=start=11.76:end=13.05,asetpts=PTS-STARTPTS[a8];[0:v]trim=start=13.83:end=15.99,setpts=PTS-STARTPTS[v9];[0:a]atrim=start=13.83:end=15.99,asetpts=PTS-STARTPTS[a9];[0:v]trim=start=16.05:end=17.28,setpts=PTS-STARTPTS[v10];[0:a]atrim=start=16.05:end=17.28,asetpts=PTS-STARTPTS[a10];[0:v]trim=start=39.96:end=40.62,setpts=PTS-STARTPTS[v11];[0:a]atrim=start=39.96:end=40.62,asetpts=PTS-STARTPTS[a11]; [v0] [a0] [v1] [a1] [v2] [a2] [v3] [a3] [v4] [a4] [v5] [a5] [v6] [a6] [v7] [a7] [v8] [a8] [v9] [a9] [v10] [a10] [v11] [a11]concat=n=12:v=1:a=1 [out]" -map "[out]" example_COMPLEX.mp4'
-    command = '-filter_complex "[0:v]trim=s rt=0.15:end=0.69,setpts=PTS-STARTPTS[v0];[0:a]atrim=start=0.15:end=0.69,asetpts=PTS-STARTPTS[a0];[0:v]trim=start=1.29:end=3.21,setpts=PTS-STARTPTS[v1];[0:a]atrim=start=1.29:end=3.21,asetpts=PTS-STARTPTS[a1];[0:v]trim=start=3.24:end=4.23,setpts=PTS-STARTPTS[v2];[0:a]atrim=start=3.24:end=4.23,asetpts=PTS-STARTPTS[a2];[0:v]trim=start=4.26:end=4.83,setpts=PTS-STARTPTS[v3];[0:a]atrim=start=4.26:end=4.83,asetpts=PTS-STARTPTS[a3];[0:v]trim=start=5.04:end=6.09,setpts=PTS-STARTPTS[v4];[0:a]atrim=start=5.04:end=6.09,asetpts=PTS-STARTPTS[a4];[0:v]trim=start=6.12:end=8.34,setpts=PTS-STARTPTS[v5];[0:a]atrim=start=6.12:end=8.34,asetpts=PTS-STARTPTS[a5];[0:v]trim=start=8.4:end=10.41,setpts=PTS-STARTPTS[v6];[0:a]atrim=start=8.4:end=10.41,asetpts=PTS-STARTPTS[a6];[0:v]trim=start=10.71:end=11.7,setpts=PTS-STARTPTS[v7];[0:a]atrim=start=10.71:end=11.7,asetpts=PTS-STARTPTS[a7];[0:v]trim=start=11.76:end=13.05,setpts=PTS-STARTPTS[v8];[0:a]atrim=start=11.76:end=13.05,asetpts=PTS-STARTPTS[a8];[0:v]trim=start=13.83:end=15.99,setpts=PTS-STARTPTS[v9];[0:a]atrim=start=13.83:end=15.99,asetpts=PTS-STARTPTS[a9];[0:v]trim=start=16.05:end=17.28,setpts=PTS-STARTPTS[v10];[0:a]atrim=start=16.05:end=17.28,asetpts=PTS-STARTPTS[a10];[0:v]trim=start=39.96:end=40.62,setpts=PTS-STARTPTS[v11];[0:a]atrim=start=39.96:end=40.62,asetpts=PTS-STARTPTS[a11]; [v0] [a0] [v1] [a1] [v2] [a2] [v3] [a3] [v4] [a4] [v5] [a5] [v6] [a6] [v7] [a7] [v8] [a8] [v9] [a9] [v10] [a10] [v11] [a11]concat=n=12:v=1:a=1 [out]" -map "[out]"'
+    command = 'ffmpeg -y -i example.mp4 -filter_complex "[0:v]trim=start=0.15:end=0.69,setpts=PTS-STARTPTS[v0];[0:a]atrim=start=0.15:end=0.69,asetpts=PTS-STARTPTS[a0];[0:v]trim=start=1.29:end=3.21,setpts=PTS-STARTPTS[v1];[0:a]atrim=start=1.29:end=3.21,asetpts=PTS-STARTPTS[a1];[0:v]trim=start=3.24:end=4.23,setpts=PTS-STARTPTS[v2];[0:a]atrim=start=3.24:end=4.23,asetpts=PTS-STARTPTS[a2];[0:v]trim=start=4.26:end=4.83,setpts=PTS-STARTPTS[v3];[0:a]atrim=start=4.26:end=4.83,asetpts=PTS-STARTPTS[a3];[0:v]trim=start=5.04:end=6.09,setpts=PTS-STARTPTS[v4];[0:a]atrim=start=5.04:end=6.09,asetpts=PTS-STARTPTS[a4];[0:v]trim=start=6.12:end=8.34,setpts=PTS-STARTPTS[v5];[0:a]atrim=start=6.12:end=8.34,asetpts=PTS-STARTPTS[a5];[0:v]trim=start=8.4:end=10.41,setpts=PTS-STARTPTS[v6];[0:a]atrim=start=8.4:end=10.41,asetpts=PTS-STARTPTS[a6];[0:v]trim=start=10.71:end=11.7,setpts=PTS-STARTPTS[v7];[0:a]atrim=start=10.71:end=11.7,asetpts=PTS-STARTPTS[a7];[0:v]trim=start=11.76:end=13.05,setpts=PTS-STARTPTS[v8];[0:a]atrim=start=11.76:end=13.05,asetpts=PTS-STARTPTS[a8];[0:v]trim=start=13.83:end=15.99,setpts=PTS-STARTPTS[v9];[0:a]atrim=start=13.83:end=15.99,asetpts=PTS-STARTPTS[a9];[0:v]trim=start=16.05:end=17.28,setpts=PTS-STARTPTS[v10];[0:a]atrim=start=16.05:end=17.28,asetpts=PTS-STARTPTS[a10];[0:v]trim=start=39.96:end=40.62,setpts=PTS-STARTPTS[v11];[0:a]atrim=start=39.96:end=40.62,asetpts=PTS-STARTPTS[a11]; [v0] [a0] [v1] [a1] [v2] [a2] [v3] [a3] [v4] [a4] [v5] [a5] [v6] [a6] [v7] [a7] [v8] [a8] [v9] [a9] [v10] [a10] [v11] [a11]concat=n=12:v=1:a=1 [out]" -map "[out]" example_COMPLEX.mp4'
     return command
 
 @app.route('/')
@@ -73,6 +69,7 @@ def api_process():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash(filename)
+            print(f'Request file : {filename}')
             # video_path = filename
             # video = cv2.VideoCapture(video_path)
             # fps = video.get(cv2.CAP_PROP_FPS)
@@ -140,17 +137,16 @@ def upload_file():
             # output = cut.export_good()
             cut.extract_audio()
             cut.load_audio()
-            # cut.vosk_process()
+            # # cut.vosk_process()
             cut.df = vosk.transcribe(cut.audioData)
             cut.feature_process()
             cut.generate_complex_filter()
             cut.execute()
             output = cut.post_process()
             path = output
-            try:
-                return send_file(path, as_attachment=True)
-            except Exception as e:
-                return 404
+            # try:
+            return send_file(path, as_attachment=True)
+            # except Exception as e:
                 # self.log.exception(e)
                 # self.Error(400)
             return 'file uploaded successfully'
@@ -237,7 +233,6 @@ def uploaded_file(filename):
     # return send_from_directory(app.config['UPLOAD_FOLDER'],
     #                             filename)
 if __name__ == "__main__":
-    # app.run(debug=True, threaded=True)
-    # vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
-    app.run(host='0.0.0.0',port=80, threaded=True)
+    app.run(debug=True, threaded=True)
+    # app.run(host='0.0.0.0',port=80)
 
