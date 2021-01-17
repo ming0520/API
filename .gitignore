@@ -3,3 +3,4 @@ log.txt
 *.csv
 run.sh
 *.wav
+vosk-model-en-us-aspire-0.2

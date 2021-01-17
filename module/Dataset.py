@@ -57,7 +57,8 @@ class Dataset:
             features.extractmfcc()
             features.extractrmse()
         except ValueError:
-            self.failed_file.append(file_path)
+            self.failed_file.append(ValueError)
+            print(ValueError)
 
         feature_vector = []
 
