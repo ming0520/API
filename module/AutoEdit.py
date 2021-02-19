@@ -18,10 +18,14 @@ import pandas as pd
 import librosa
 import soundfile as sf
 import vosk
+import srt
 
 # display libary
 from tqdm import tqdm
 from tqdm.notebook import tqdm
+
+#time related
+from datetime import datetime, timedelta
 
 # machine learning libary
 import tensorflow as tf
@@ -461,12 +465,12 @@ class AutoEdit:
                 end_index = min( int( (df['end'][i]) * self.sampleRate), self.audioSampleCount)
                 fea = ds.get_feature_by_audio(self.audioData[start_index:end_index],11025)
                 features = np.vstack((features,[fea]))
-            print(f'Saved features to {feature_file}')
-            np.savetxt(feature_file, features, delimiter=',')
+#             print(f'Saved features to {feature_file}')
+#             np.savetxt(feature_file, features, delimiter=',')
 
 
-        print(f'Load feature from {feature_file}')
-        features = np.loadtxt(feature_file,delimiter=',')
+#         print(f'Load feature from {feature_file}')
+#         features = np.loadtxt(feature_file,delimiter=',')
 
         print('Predicting...')
         predictions = model.predict(x=features, batch_size=84,verbose=0)
@@ -478,7 +482,7 @@ class AutoEdit:
             isInclude = True
             predict = np.round(predictions[i])
             word = df['word'][i]
-            if(word == "i'm" or word == 'um' or word =='m' or word=='ah'or word=='huh'or word=='hm'):
+            if(word == 'as' or word == "i'm" or word == 'um' or word =='m' or word=='ah'or word=='huh'or word=='hm'):
                 if(predict == 1):
                     isInclude = False
             if(isInclude):
@@ -507,7 +511,41 @@ class AutoEdit:
             word = word + ts.word + " "    
 
         render_list.append(Timestamp(include_list[-1].start,include_list[-1].end,include_list[-1].word))
-        self.render_list = render_list           
+        self.render_list = render_list
+        
+    def generate_subtitles(self):
+        cumulativeEnd = 0
+        cumulativeStart = 0
+        numberOfList = len(self.render_list)
+        srt_list = []
+        caption = ''
+        start = 0
+        end = 0
+        counter = 1
+        for index,include in tqdm(enumerate(self.render_list)):
+            word = include.word
+            newCaption = caption + word
+            cumulativeStart = round(cumulativeEnd,2)
+            cumulativeEnd += round(include.get_duration(),2)
+            end = cumulativeEnd = round(cumulativeEnd,2)
+            if(len(newCaption) < 32):
+                caption = newCaption
+            elif(len(newCaption) >= 32):
+                newStart = timedelta(seconds=start)
+                newEnd = timedelta(seconds=end)
+                subtitle = srt.Subtitle(index=counter,start=newStart,
+                                    end=newEnd,content=newCaption)
+                srt_list.append(subtitle)
+                counter += 1
+                start = end
+                newCaption = caption = ''
+        newStart = timedelta(seconds=start)
+        newEnd = timedelta(seconds=end)
+        subtitle = srt.Subtitle(index=counter,start=newStart,
+                            end=newEnd,content=newCaption)
+        srt_list.append(subtitle)
+        self.srt_list = srt_list
+        return srt_list           
 
 
     def generate_complex_filter(self):
@@ -553,5 +591,7 @@ class AutoEdit:
             self.filter = filter
         else:
             self.filter = filter
-        
+            
+    def get_new_duration(self):
+        return self.srt_list[-1].end.total_seconds()
         
