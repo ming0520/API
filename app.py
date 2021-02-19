@@ -144,7 +144,7 @@ def api_process():
                     verbose=True,fm=4,st=0.2,
                     log=True,mono=True,
                     model='module/20201227-1123-MLP-RMSprop-Default-80-123.h5',
-                    isRender=True
+                    isRender=False
                     )
             cut.AUDIO_OUTPUT = filename
             # cut.extract_audio()
