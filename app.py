@@ -157,9 +157,9 @@ def api_process():
             command = cut.filter
             try:
                 x = {
-                        'filter':str(cut.filter),
-                        'subtitles':str(srt.compose(cut.srt_list)),
-                        'new_duration':float(cut.get_new_duration())
+                        '"filter"':str(f'f"{cut.filter}"'),
+                        '"subtitles"':str(f'"{srt.compose(cut.srt_list)}"'),
+                        '"new_duration"':float(cut.get_new_duration())
                     }    
                 return Response(json.dumps(x), mimetype='application/json')
                 # return x
@@ -302,6 +302,10 @@ def uploaded_file(filename):
     # return send_from_directory(app.config['UPLOAD_FOLDER'],
     #                             filename)
 if __name__ == "__main__":
+<<<<<<< HEAD
     #app.run(debug=True, threaded=True)
+=======
+    # app.run(debug=True, threaded=True)
+>>>>>>> 2f9f33ec1c4e3e1628ca4c8d180dd668bdfb93b3
     app.run(host='0.0.0.0',port=80, threaded=True)
 
