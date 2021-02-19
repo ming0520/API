@@ -157,9 +157,9 @@ def api_process():
             command = cut.filter
             try:
                 x = {
-                        '"filter"':str(f'"{cut.filter}"'),
-                        '"subtitles"':str(f'"{srt.compose(cut.srt_list)}"'),
-                        '"new_duration"':float(cut.get_new_duration())
+                        '''filter''':str(f'''{cut.filter}'''),
+                        '''subtitles''':str(f'''{srt.compose(cut.srt_list)}'''),
+                        '''new_duration''':float(cut.get_new_duration())
                     }    
                 return Response(json.dumps(x), mimetype='application/json')
                 # return x
