@@ -484,7 +484,8 @@ class AutoEdit:
             word = df['word'][i]
             if(word == 'as' or word == "i'm" or word == 'um' or word =='m' or word=='ah'or word=='huh'or word=='hm'):
                 if(predict == 1):
-                    isInclude = False
+                    if(word == df['word'][i-1]):
+                        isInclude = False
             if(isInclude):
                 start = df['start'][i]
                 end = df['end'][i]
