@@ -1,4 +1,6 @@
 import importlib
+import json
+import srt
 
 import module.AutoEdit
 importlib.reload(module.AutoEdit)
@@ -8,11 +10,13 @@ import module.VoskProcess
 importlib.reload(module.VoskProcess)
 from module.VoskProcess import VoskProcess
 # vosk = VoskProcess(vosk_path='module/vosk-model-en-us-aspire-0.2')
-vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
+# vosk = VoskProcess(vosk_path='module/vosk-model-small-en-us-0.15')
 # End Auto Edit Library
 
 import os
 from flask import Flask, flash, request, redirect, url_for,render_template, send_file
+from flask import Response
+from flask import jsonify
 from werkzeug.utils import secure_filename
 import subprocess
 from shutil import move, rmtree, copyfile
@@ -27,6 +31,30 @@ import cv2
 #     self.start = start
 #     self.end = end
 #     self.text = text
+
+demoCommand = '-filter_complex "[0:v]trim=start=0.15:end=0.69,setpts=PTS-STARTPT \
+S[v0];[0:a]atrim=start=0.15:end=0.69,asetpts=PTS-STARTPTS[a0];[0:v]trim=start=1.29:\
+end=3.21,setpts=PTS-STARTPTS[v1];[0:a]atrim=start=1.29:end=3.21,asetpts=PTS-STARTPTS[a1];[0:v]trim \
+=start=3.24:end=4.23,setpts=PTS-STARTPTS[v2];[0:a]atrim=start=3.24:end=4.23,asetpts=PTS-STARTPTS[a2];[ \
+0:v]trim=start=4.26:end=4.83,setpts=PTS-STARTPTS[v3];[0:a]atrim=start=4.26:end=4.83,asetpts=PTS-STARTPTS[a3]; \
+[0:v]trim=start=5.04:end=6.09,setpts=PTS-STARTPTS[v4];[0:a]atrim=start=5.04:end=6.09,asetpts=PTS-STARTPTS[a4];[0:v] \
+trim=start=6.12:end=8.34,setpts=PTS-STARTPTS[v5];[0:a]atrim=start=6.12:end=8.34,asetpts=PTS-STARTPTS[a5];[0:v]tri \
+m=start=8.4:end=10.41,setpts=PTS-STARTPTS[v6];[0:a]atrim=start=8.4:end=10.41,asetpts=PTS-STARTPTS[a6] \
+;[0:v]trim=start=10.71:end=11.7,setpts=PTS-STARTPTS[v7];[0:a]atrim=start=10.71:end=11.7,asetpts=PTS-S \
+TARTPTS[a7];[0:v]trim=start=11.76:end=13.05,setpts=PTS-STARTPTS[v8];[0:a]atrim=start=11.76:end=13.05,ase \
+tpts=PTS-STARTPTS[a8];[0:v]trim=start=13.83:end=15.99,setpts=PTS-STARTPTS[v9];[0:a]atrim=start=13.83:end=1 \
+5.99,asetpts=PTS-STARTPTS[a9];[0:v]trim=start=16.05:end=17.28,setpts=PTS-STARTPTS[v10];[0:a]atrim=star \
+t=16.05:end=17.28,asetpts=PTS-STARTPTS[a10];[0:v]trim=start=39.96:end=40.62,setpts=PTS-STARTPTS[ \
+v11];[0:a]atrim=start=39.96:end=40.62,asetpts=PTS-STARTPTS[a11]; [v0] [a0] [v1] [a1] [v2] [a2]  \
+[v3] [a3] [v4] [a4] [v5] [a5] [v6] [a6] [v7] [a7] [v8] [a8] [v9] [a9] [v10] [a10] [v11] [ \
+a11]concat=n=12:v=1:a=1 [out]" -map "[out]"'
+demoDuration = 15.3
+demoSubtitles = 'adaiusdhuasdiuhadihasd'
+
+voskFolder='module/vosk-model-small-en-us-0.15'
+if(os.path.exists(voskFolder)):
+    print(f'{voskFolder}: pass')
+recMing = VoskProcess(vosk_path=voskFolder)
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'mp4'}
@@ -49,12 +77,28 @@ def allowed_api_file(filename):
 
 @app.route('/demo/')
 def get_demo():
-    command = '-filter_complex "[0:v]trim=start=0.15:end=0.69,setpts=PTS-STARTPTS[v0];[0:a]atrim=start=0.15:end=0.69,asetpts=PTS-STARTPTS[a0];[0:v]trim=start=1.29:end=3.21,setpts=PTS-STARTPTS[v1];[0:a]atrim=start=1.29:end=3.21,asetpts=PTS-STARTPTS[a1];[0:v]trim=start=3.24:end=4.23,setpts=PTS-STARTPTS[v2];[0:a]atrim=start=3.24:end=4.23,asetpts=PTS-STARTPTS[a2];[0:v]trim=start=4.26:end=4.83,setpts=PTS-STARTPTS[v3];[0:a]atrim=start=4.26:end=4.83,asetpts=PTS-STARTPTS[a3];[0:v]trim=start=5.04:end=6.09,setpts=PTS-STARTPTS[v4];[0:a]atrim=start=5.04:end=6.09,asetpts=PTS-STARTPTS[a4];[0:v]trim=start=6.12:end=8.34,setpts=PTS-STARTPTS[v5];[0:a]atrim=start=6.12:end=8.34,asetpts=PTS-STARTPTS[a5];[0:v]trim=start=8.4:end=10.41,setpts=PTS-STARTPTS[v6];[0:a]atrim=start=8.4:end=10.41,asetpts=PTS-STARTPTS[a6];[0:v]trim=start=10.71:end=11.7,setpts=PTS-STARTPTS[v7];[0:a]atrim=start=10.71:end=11.7,asetpts=PTS-STARTPTS[a7];[0:v]trim=start=11.76:end=13.05,setpts=PTS-STARTPTS[v8];[0:a]atrim=start=11.76:end=13.05,asetpts=PTS-STARTPTS[a8];[0:v]trim=start=13.83:end=15.99,setpts=PTS-STARTPTS[v9];[0:a]atrim=start=13.83:end=15.99,asetpts=PTS-STARTPTS[a9];[0:v]trim=start=16.05:end=17.28,setpts=PTS-STARTPTS[v10];[0:a]atrim=start=16.05:end=17.28,asetpts=PTS-STARTPTS[a10];[0:v]trim=start=39.96:end=40.62,setpts=PTS-STARTPTS[v11];[0:a]atrim=start=39.96:end=40.62,asetpts=PTS-STARTPTS[a11]; [v0] [a0] [v1] [a1] [v2] [a2] [v3] [a3] [v4] [a4] [v5] [a5] [v6] [a6] [v7] [a7] [v8] [a8] [v9] [a9] [v10] [a10] [v11] [a11]concat=n=12:v=1:a=1 [out]" -map "[out]"'
-    return command
+    command = demoCommand
+    return demoCommand
 
 @app.route('/')
 def main():
     return render_template("index.html")
+
+
+@app.route('/de/')
+def de_api():
+    try:
+        x = {
+            'filter':demoCommand,
+            'subtitles':demoSubtitles,
+            'new_duration':demoDuration
+        }             
+        return Response(json.dumps(x), mimetype='application/json')
+        # return command
+    except Exception as e:
+        return 404
+        # self.log.exception(e)
+        # self.Error(400)
 
 @app.route('/api/',methods=['GET', 'POST'])
 def api_process():
@@ -78,30 +122,51 @@ def api_process():
             # video = cv2.VideoCapture(video_path)
             # fps = video.get(cv2.CAP_PROP_FPS)
             # print(fps)
+            # cut = AutoEdit(ac='1',
+            #         verbose=True,fm=4,st=0.2,
+            #         log=True,mono=True,
+            #         model='module/20201227-1123-MLP-RMSprop-Default-80-123.h5',
+            #         isRender=False
+            #         )
+            # # output = cut.export_good()
+            # cut.AUDIO_OUTPUT = filename
+            # # cut.extract_audio()
+            # cut.load_audio()
+            # # cut.vosk_process()
+            # # flash('Transcribing')
+            # cut.df = vosk.transcribe(cut.audioData)
+            # # flash('Feature processing')
+            # cut.feature_process()
+            # # flash('Generate command')
+            # cut.generate_complex_filter()
+            # # cut.execute()
             cut = AutoEdit(ac='1',
                     verbose=True,fm=4,st=0.2,
                     log=True,mono=True,
                     model='module/20201227-1123-MLP-RMSprop-Default-80-123.h5',
-                    isRender=False
+                    isRender=True
                     )
-            # output = cut.export_good()
             cut.AUDIO_OUTPUT = filename
             # cut.extract_audio()
             cut.load_audio()
-            # cut.vosk_process()
-            # flash('Transcribing')
-            cut.df = vosk.transcribe(cut.audioData)
-            # flash('Feature processing')
+            cut.df = recMing.transcribe(cut.audioData)
             cut.feature_process()
-            # flash('Generate command')
             cut.generate_complex_filter()
-            # cut.execute()
+            cut.generate_subtitles()            
             output = cut.post_process()
             command = cut.filter
             try:
-                return command
+                x = {
+                        'filter':str(cut.filter),
+                        'subtitles':str(srt.compose(cut.srt_list)),
+                        'new_duration':float(cut.get_new_duration())
+                    }    
+                return Response(json.dumps(x), mimetype='application/json')
+                # return x
+                # return command
             except Exception as e:
-                return 404
+                x = {'error':'Server Error'}
+                return Response(json.dumps(x), mimetype='application/json',status=404)
                 # self.log.exception(e)
                 # self.Error(400)
             
@@ -237,6 +302,6 @@ def uploaded_file(filename):
     # return send_from_directory(app.config['UPLOAD_FOLDER'],
     #                             filename)
 if __name__ == "__main__":
-    # app.run(debug=True, threaded=True)
-    app.run(host='0.0.0.0',port=80, threaded=True)
+    app.run(debug=True, threaded=True)
+    # app.run(host='0.0.0.0',port=80, threaded=True)
 
