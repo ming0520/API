@@ -157,7 +157,7 @@ def api_process():
             command = cut.filter
             try:
                 x = {
-                        '"filter"':str(f'f"{cut.filter}"'),
+                        '"filter"':str(f'"{cut.filter}"'),
                         '"subtitles"':str(f'"{srt.compose(cut.srt_list)}"'),
                         '"new_duration"':float(cut.get_new_duration())
                     }    
