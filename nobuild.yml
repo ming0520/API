@@ -1,13 +1,20 @@
-name: pythonGPU2
+name: pythonGPU
 channels:
   - defaults
 dependencies:
   - _libgcc_mutex=0.1
   - ca-certificates=2020.12.8
   - certifi=2020.12.5
+  - ld_impl_linux-64=2.33.1
+  - libedit=3.1.20191231
+  - libffi=3.3
+  - libgcc-ng=9.1.0
+  - libstdcxx-ng=9.1.0
+  - ncurses=6.2
   - openssl=1.1.1i
   - pip=20.3.3
   - python=3.8.5
+  - readline=8.0
   - setuptools=51.0.0
   - sqlite=3.33.0
   - tk=8.6.10
@@ -15,13 +22,6 @@ dependencies:
   - xz=5.2.5
   - zlib=1.2.11
   - pip:
-    - libffi==3.3
-    - ld_impl_linux-64==2.33.1
-    - libedit==3.1.20191231
-    - readline==8.0
-    - libgcc-ng==9.1.0
-    - ncurses==6.2
-    - libstdcxx-ng==9.1.0
     - absl-py==0.11.0
     - appdirs==1.4.4
     - argon2-cffi==20.1.0
@@ -129,4 +129,4 @@ dependencies:
     - werkzeug==1.0.1
     - widgetsnbextension==3.5.1
     - wrapt==1.12.1
-prefix: /home/ming0520/anaconda3/envs/pythonGPU2
+prefix: /home/ming0520/anaconda3/envs/pythonGPU
