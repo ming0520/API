@@ -158,7 +158,7 @@ def api_process():
             try:
                 x = {
                         "filter":f'''{cut.filter}''',
-                        "subtitles":f'''{srt.compose(cut.srt_list)}'''),
+                        "subtitles":f'''{srt.compose(cut.srt_list)}''',
                         "new_duration":cut.get_new_duration()
                     }    
                 return Response(json.dumps(x), mimetype='application/json')
