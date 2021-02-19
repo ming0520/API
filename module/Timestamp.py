@@ -6,3 +6,6 @@ class Timestamp:
         self.isInclude = isInclude
         self.feature = feature
         self.label = label
+        
+    def get_duration(self):
+        return self.end - self.start
