@@ -34,7 +34,7 @@ from sklearn import preprocessing
 # Make numpy values easier to read.
 np.set_printoptions(precision=3, suppress=True)
 
-developed library
+# developed library
 import importlib
 
 import module.Timecode
