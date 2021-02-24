@@ -29,12 +29,11 @@ from datetime import datetime, timedelta
 
 # machine learning libary
 import tensorflow as tf
-from sklearn import preprocessing
 
 # Make numpy values easier to read.
 np.set_printoptions(precision=3, suppress=True)
 
-developed library
+# developed library
 import importlib
 
 import module.Timecode
@@ -462,8 +461,8 @@ class AutoEdit:
             features = np.empty(shape=(0,80))
             ds = Dataset()
             for i in tqdm(df.index[:]): 
-                start_index = max(0, int(  (df['start'][i] * self.sampleRate)) )
-                end_index = min( int( ( df['end'][i] * self.sampleRate)), self.audioSampleCount)
+                start_index = max(0, int(  df['start'][i] * self.sampleRate))
+                end_index = min( int( (df['end'][i]) * self.sampleRate), self.audioSampleCount)
                 fea = ds.get_feature_by_audio(self.audioData[start_index:end_index],11025)
                 features = np.vstack((features,[fea]))
 #             print(f'Saved features to {feature_file}')
@@ -474,9 +473,6 @@ class AutoEdit:
 #         features = np.loadtxt(feature_file,delimiter=',')
 
         print('Predicting...')
-    
-#         min_max_scaler = preprocessing.MinMaxScaler()
-#         features = min_max_scaler.fit_transform(features)
         predictions = model.predict(x=features, batch_size=84,verbose=0)
         print("Finish predict!")
 
@@ -486,17 +482,14 @@ class AutoEdit:
             isInclude = True
             predict = np.round(predictions[i])
             word = df['word'][i]
-            prevWord = df['word'][max(0,(i-1))]
             if(word == 'as' or word == "i'm" or word == 'um' or word =='m' or word=='ah'or word=='huh'or word=='hm'):
-#             if(True):
-                if(predict == 1 or word == prevWord or word == 'um' or word =='m' or word=='ah'or word=='huh'or word=='hm'):
+                if(predict == 1):
+                    if(word == df['word'][i-1]):
                         isInclude = False
-            if(prevWord == word):
-                isInclude = False
             if(isInclude):
                 start = df['start'][i]
                 end = df['end'][i]
-                ts = Timestamp(start,end,word=word,label=1)
+                ts = Timestamp(start,end,word=word,label=predict)
                 include_list.append(ts)
                 
         self.include_list = include_list        
@@ -510,14 +503,13 @@ class AutoEdit:
             current_end = ts.end
             prev_start = include_list[i-1].start
             prev_end = include_list[i-1].end
-            word = word + ts.word + " "    
             if(i >= 1 and current_start != prev_end):
                 segment = Timestamp(start,prev_end, word=word)
                 word = ''
                 start = current_start
                 render_list.append(segment)
                 counter = counter + 1
-            
+            word = word + ts.word + " "    
 
         render_list.append(Timestamp(include_list[-1].start,include_list[-1].end,include_list[-1].word))
         self.render_list = render_list
